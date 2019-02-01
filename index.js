@@ -12,4 +12,10 @@ const rect = svg.selectAll('rect')
   .attr('height', d => d.height)
   .attr('fill', d => d.fill);
 
+rect.enter()
+  .append('rect')
+  .attr('width', (d, i, n) => d.width)
+  .attr('height', d => d.height)
+  .attr('fill', d => d.fill);
+
   console.log(rect)
