@@ -8,25 +8,35 @@ d3.json('menu.json').then(data => {
     .domain([0,1000])
     .range([0,500])
 
-  console.log(y(400));
-  console.log(y(0));
-  console.log(y(900));
+  const x = d3.scaleBand()
+    .domain(data.map(item => item.name))
+    .range([0, 500])
+    .paddingInner(0.2)
+    .paddingOuter(0.2)
+
+  console.log(x("veg curry"));
+  console.log(x("veg pasta"));
+  console.log(x.bandwidth());
+
+  // console.log(y(400));
+  // console.log(y(0));
+  // console.log(y(900));
 
   // join the data to rects
   const rects = svg.selectAll('rect')
     .data(data);
 
   // add attrs to rects already in DOM
-  rects.attr('width', 50)
+  rects.attr('width', x.bandwidth)
     .attr('height', d => y(d.orders))
     .attr('fill', 'orange')
-    .attr('x', (d, i) => i * 70) // For each consecutive different rectangle we're moving them further from the left by 70 pixels each time.
+    .attr('x', d => x(d.name)) // using the scaleBand instead
 
   // append the enter selection to the DOM
   rects.enter()
     .append('rect')
-      .attr('width', 50)
+      .attr('width', x.bandwidth)
       .attr('height', d => y(d.orders))
       .attr('fill', 'orange')
-      .attr('x', (d, i) => i * 70) // For each consecutive different rectangle we're moving them further from the left by 70 pixels each time.      
+      .attr('x', d => x(d.name)) // using the scaleBand instead
 });
