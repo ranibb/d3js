@@ -76,20 +76,35 @@ const update = (data) => {
 };
 
 
+var data = [];
+
 // get data from firestore
-db.collection('dishes').get().then(res => {
+db.collection('dishes').onSnapshot(res => {
 
-  var data = [];
+  res.docChanges().forEach(change => {
 
-  res.docs.forEach(doc => {
-    data.push(doc.data());
+    const doc = {...change.doc.data(), id: change.doc.id}
+
+    console.log(doc);
+    console.log(change);
+
+    switch(change.type) {
+      case 'added':
+        data.push(doc);
+        break;
+      case 'modified':
+        const index = data.findIndex(item => item.id == doc.id);
+        data[index] = doc;
+        break;
+      case 'removed':
+        data = data.filter(item => item.id !== doc.id);
+        break;
+      default:
+        break;
+    }
+
   });
 
-  update(data);
-
-  d3.interval(() => {
-    data.pop();
-    update(data);
-  }, 3000)
+  update(data)
 
 });
