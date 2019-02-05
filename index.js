@@ -18,29 +18,42 @@ const xAxisGroup = graph.append('g')
   .attr('transform', `translate(0, ${graphHeight})`)
 const yAxisGroup = graph.append('g');
 
-db.collection('dishes').get().then(res => {
+// scales
+const y = d3.scaleLinear()
+  .range([graphHeight, 0])
 
-  var data = [];
-  res.docs.forEach(doc => {
-    data.push(doc.data());
-  })
+const x = d3.scaleBand()
+  .range([0, 500])
+  .paddingInner(0.2)
+  .paddingOuter(0.2)
 
-  // Creating a linear scale
-  const y = d3.scaleLinear()
-    .domain([0, d3.max(data, d => d.orders)])
-    .range([graphHeight, 0])
+// create the axis
+const xAxis = d3.axisBottom(x);
+const yAxis = d3.axisLeft(y)
+  .ticks(3)
+  .tickFormat(d => d + ' orders');
 
-  const x = d3.scaleBand()
-    .domain(data.map(item => item.name))
-    .range([0, 500])
-    .paddingInner(0.2)
-    .paddingOuter(0.2)
+// x axis text
+xAxisGroup.selectAll('text')
+  .attr('transform', 'rotate(-40)')
+  .attr('text-anchor', 'end')
+  .attr('fill', 'orange')
+
+// update function
+const update = (data) => {
+
+  // updating scale domains
+  y.domain([0, d3.max(data, d => d.orders)])
+  x.domain(data.map(item => item.name))
 
   // join the data to rects
   const rects = graph.selectAll('rect')
     .data(data);
 
-  // add attrs to rects already in DOM
+  // remove exit selection
+  rects.exit().remove();
+
+  // add/update attrs to rects already in DOM
   rects.attr('width', x.bandwidth)
     .attr('height', d => graphHeight - y(d.orders))
     .attr('fill', 'orange')
@@ -50,26 +63,28 @@ db.collection('dishes').get().then(res => {
   // append the enter selection to the DOM
   rects.enter()
     .append('rect')
-      .attr('width', x.bandwidth)
-      .attr('height', d => graphHeight - y(d.orders))
-      .attr('fill', 'orange')
-      .attr('x', d => x(d.name)) // using the scaleBand instead
-      .attr('y', d => y(d.orders))
+    .attr('width', x.bandwidth)
+    .attr('height', d => graphHeight - y(d.orders))
+    .attr('fill', 'orange')
+    .attr('x', d => x(d.name)) // using the scaleBand instead
+    .attr('y', d => y(d.orders))
 
-  // create and call the axis
-  const xAxis = d3.axisBottom(x);
-  const yAxis = d3.axisLeft(y)
-    .ticks(3)
-    .tickFormat(d => d + ' orders');
-
+  // Call axes
   xAxisGroup.call(xAxis);
   yAxisGroup.call(yAxis);
 
-  xAxisGroup.selectAll('text')
-    .attr('transform', 'rotate(-40)')
-    .attr('text-anchor', 'end')
-    .attr('fill', 'orange')
+};
 
 
+// get data from firestore
+db.collection('dishes').get().then(res => {
+
+  var data = [];
+
+  res.docs.forEach(doc => {
+    data.push(doc.data());
+  });
+
+  update(data);
 
 });
