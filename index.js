@@ -18,7 +18,12 @@ const xAxisGroup = graph.append('g')
   .attr('transform', `translate(0, ${graphHeight})`)
 const yAxisGroup = graph.append('g');
 
-d3.json('menu.json').then(data => {
+db.collection('dishes').get().then(res => {
+
+  var data = [];
+  res.docs.forEach(doc => {
+    data.push(doc.data());
+  })
 
   // Creating a linear scale
   const y = d3.scaleLinear()

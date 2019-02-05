@@ -13,6 +13,21 @@
   <div class="canvas">
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-firestore.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCZsDuIPF7YRBjdJNZiJl4i7nig29TIlX8",
+      authDomain: "d3-example-8bbff.firebaseapp.com",
+      databaseURL: "https://d3-example-8bbff.firebaseio.com",
+      projectId: "d3-example-8bbff",
+      storageBucket: "d3-example-8bbff.appspot.com",
+      messagingSenderId: "3889468187"
+    };
+    firebase.initializeApp(config);
+    const db = firebase.firestore();
+  </script>
   <script src="https://d3js.org/d3.v5.js"></script>
   <script src="index.js"></script>
 </body>
