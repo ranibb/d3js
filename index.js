@@ -64,10 +64,13 @@ const update = (data) => {
   rects.enter()
     .append('rect')
     .attr('width', x.bandwidth)
-    .attr('height', d => graphHeight - y(d.orders))
+    .attr('height', 0)
     .attr('fill', 'orange')
     .attr('x', d => x(d.name)) // using the scaleBand instead
-    .attr('y', d => y(d.orders))
+    .attr('y', graphHeight)
+    .transition().duration(500)
+      .attr('y', d => y(d.orders))
+      .attr('height', d => graphHeight - y(d.orders))
 
   // Call axes
   xAxisGroup.call(xAxis);
@@ -108,3 +111,11 @@ db.collection('dishes').onSnapshot(res => {
   update(data)
 
 });
+
+// Starting conditions:
+// Y = graphHeight
+// Height = 0
+
+// Ending conditions:
+// Y = y(d.orders)
+// height = graphHeight - y(d.orders)
