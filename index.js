@@ -39,6 +39,8 @@ xAxisGroup.selectAll('text')
   .attr('text-anchor', 'end')
   .attr('fill', 'orange')
 
+const t = d3.transition().duration(500);
+
 // update function
 const update = (data) => {
 
@@ -58,7 +60,7 @@ const update = (data) => {
     
     .attr('fill', 'orange')
     .attr('x', d => x(d.name)) // using the scaleBand instead
-    .transition().duration(500)
+    .transition(t)
       .attr('height', d => graphHeight - y(d.orders))
       .attr('y', d => y(d.orders))
 
@@ -70,7 +72,7 @@ const update = (data) => {
     .attr('fill', 'orange')
     .attr('x', d => x(d.name)) // using the scaleBand instead
     .attr('y', graphHeight)
-    .transition().duration(500)
+    .transition(t)
       .attr('y', d => y(d.orders))
       .attr('height', d => graphHeight - y(d.orders))
 
