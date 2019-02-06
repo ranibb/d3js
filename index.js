@@ -39,7 +39,7 @@ xAxisGroup.selectAll('text')
   .attr('text-anchor', 'end')
   .attr('fill', 'orange')
 
-const t = d3.transition().duration(500);
+const t = d3.transition().duration(1500);
 
 // update function
 const update = (data) => {
@@ -66,13 +66,13 @@ const update = (data) => {
   // append the enter selection to the DOM
   rects.enter()
     .append('rect')
-    .attr('width', x.bandwidth)
     .attr('height', 0)
     .attr('fill', 'orange')
     .attr('x', d => x(d.name)) // using the scaleBand instead
     .attr('y', graphHeight)
     .merge(rects) // merge the current rect selection, the current element in the DOM. And apply the bellow to both the enter selection and current selection already in the DOM
     .transition(t)
+      .attrTween('width', widthTween)
       .attr('y', d => y(d.orders))
       .attr('height', d => graphHeight - y(d.orders))
 
@@ -123,3 +123,21 @@ db.collection('dishes').onSnapshot(res => {
 // Ending conditions:
 // Y = y(d.orders)
 // height = graphHeight - y(d.orders)
+
+
+// TWEENS
+
+const widthTween = (d) => {
+
+  // define interpolation
+  // d3.interpolate returns a function which we call 'i'
+  let i = d3.interpolate(0, x.bandwidth());
+
+  // return a function which takes in a time ticker 't'
+  return function(t) {
+
+    // return the value from passing the ticker into the interpolation
+    return i(t)
+  }
+
+}
