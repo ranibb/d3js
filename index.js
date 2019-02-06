@@ -57,12 +57,11 @@ const update = (data) => {
 
   // add/update attrs to rects already in DOM
   rects.attr('width', x.bandwidth)
-    
     .attr('fill', 'orange')
     .attr('x', d => x(d.name)) // using the scaleBand instead
-    .transition(t)
-      .attr('height', d => graphHeight - y(d.orders))
-      .attr('y', d => y(d.orders))
+    // .transition(t)
+    //   .attr('height', d => graphHeight - y(d.orders))
+    //   .attr('y', d => y(d.orders))
 
   // append the enter selection to the DOM
   rects.enter()
@@ -72,6 +71,7 @@ const update = (data) => {
     .attr('fill', 'orange')
     .attr('x', d => x(d.name)) // using the scaleBand instead
     .attr('y', graphHeight)
+    .merge(rects) // merge the current rect selection, the current element in the DOM. And apply the bellow to both the enter selection and current selection already in the DOM
     .transition(t)
       .attr('y', d => y(d.orders))
       .attr('height', d => graphHeight - y(d.orders))
