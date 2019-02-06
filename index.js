@@ -55,10 +55,12 @@ const update = (data) => {
 
   // add/update attrs to rects already in DOM
   rects.attr('width', x.bandwidth)
-    .attr('height', d => graphHeight - y(d.orders))
+    
     .attr('fill', 'orange')
     .attr('x', d => x(d.name)) // using the scaleBand instead
-    .attr('y', d => y(d.orders))
+    .transition().duration(500)
+      .attr('height', d => graphHeight - y(d.orders))
+      .attr('y', d => y(d.orders))
 
   // append the enter selection to the DOM
   rects.enter()
